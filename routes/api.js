@@ -1,17 +1,43 @@
 import express from "express";
-import blogController from "../app/controllers/taskController.js";
 const router = express.Router();
+import {
+  registerUser,
+  loginUser,
+  authUser,
+  getUserProfile,
+  getAllUsers,
+  updateUserProfile,
+  deleteUser,
+  logout,
+} from "../app/controllers/userController.js";
+import {
+  isLogin,
+  isLogout,
+  protect,
+} from "../app/middlewares/authMiddleware.js";
 
-// Create Route
-router.post("/create-blog", blogController.createBlog);
+// User Registration
+router.post("/register", registerUser);
 
-// Read Route
-router.get("/read-blog", blogController.readBlog);
+// User Login
+router.post("/login", isLogout, loginUser);
 
-// Update Route
-router.put("/update-blog", blogController.updateBlog);
+// User logout
+router.get("/logout", isLogin, logout);
 
-// Delete Route
-router.delete("/delete-blog", blogController.deleteBlog);
+// User Authentication by JWT token
+router.get("/auth", protect, authUser);
+
+// Get single user profile
+router.get("/:id", protect, getUserProfile);
+
+// Get all users profiles
+router.get("/", protect, getAllUsers);
+
+// Update user profile
+router.put("/:id", protect, updateUserProfile);
+
+// Delete a single user
+router.delete("/:id", protect, deleteUser);
 
 export default router;
